@@ -73,7 +73,7 @@ const Header = ({ id, className }: { id: string; className?: string }) => {
                 <ChevronsRight strokeWidth={2.8} className="size-4 text-neutral-500" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[320px] p-0">
+            <SheetContent side="left" className="md:w-[320px] w-full p-0">
               <SpaceSidebar open={sidebarOpen} />
             </SheetContent>
           </Sheet>
