@@ -196,116 +196,233 @@ const LLM = ({ id }: { id: string }) => {
     );
 
   return (
-    <div
-      className="absolute z-60 bottom-0"
-      style={{ left: `${position}%` }}
-      ref={dragItem}
-      tabIndex={0}
-    >
-      <div className="bg-bg py-2 px-3 rounded-t-lg rounded-r-lg" style={{ width: WIDTH }}>
-        <div
-          className="absolute top-2 left-2 cursor-grab select-none"
-          onMouseDown={handleDragStart}
-        >
-          <GripIcon className="size-4 text-gray-4" />
-        </div>
-        <div className="absolute top-2 right-2 cursor-pointer" onClick={() => setIsOpen(false)}>
-          <X className="size-4 text-gray-4" />
-        </div>
-        {hasResponse && (
-          <div className="p-1 mt-5 mb-2">
-            {response === "Loading..." ? (
-              <div className="px-2 pt-0 pb-4 text-sm">
-                <div className="flex items-center">
-                  Loading
-                  <div className="animate-spin rounded-full size-3 border-t-2 border-b-2 border-blue-500 ml-3"></div>
-                </div>
-                {buddy?.model == "o1-preview" && (
-                  <div className="mt-2 text-sm italic text-gray-3">
-                    (o1 currently can&apos;t stream responses so it may take a moment to appear)
+    <main>
+      {/* Desktop view */}
+      <div
+        className="absolute md:block hidden z-60 bottom-0"
+        style={{ left: `${position}%` }}
+        ref={dragItem}
+        tabIndex={0}
+      >
+        <div className="bg-bg py-2 px-3 rounded-t-lg rounded-r-lg" style={{ width: WIDTH }}>
+          <div
+            className="absolute top-2 left-2 cursor-grab select-none"
+            onMouseDown={handleDragStart}
+          >
+            <GripIcon className="size-4 text-gray-4" />
+          </div>
+          <div className="absolute top-2 right-2 cursor-pointer" onClick={() => setIsOpen(false)}>
+            <X className="size-4 text-gray-4" />
+          </div>
+          {hasResponse && (
+            <div className="p-1 mt-5 mb-2">
+              {response === "Loading..." ? (
+                <div className="px-2 pt-0 pb-4 text-sm">
+                  <div className="flex items-center">
+                    Loading
+                    <div className="animate-spin rounded-full size-3 border-t-2 border-b-2 border-blue-500 ml-3"></div>
                   </div>
-                )}
-              </div>
-            ) : (
-              <div className="leading-6 pb-3 max-h-96 overflow-auto -mt-2" ref={scrollRef}>
-                <EditorContent editor={readOnlyEditor} />
-              </div>
-            )}
-            {loading ? (
-              <Button variant="outline" onClick={() => abortController?.abort()}>
-                <StopCircle className="size-4 mr-2" /> Stop
-              </Button>
-            ) : !isGuest ? (
-              <Button variant="outline" onClick={() => addNode()}>
-                <Plus className="size-4 mr-1" /> Add to {focus === "graph" ? "Graph" : "Editor"}
-              </Button>
-            ) : (
-              <></>
-            )}
-          </div>
-        )}
-        <div className="flex px-1">
-          <div className="grow">
-            <div className={clsx("text-xs text-gray-3 h-5 mb-1", !hasResponse && "pl-3")}>
-              {isTokenCountLoading || Object.keys(tokenCount).length === 0
-                ? "Counting..."
-                : `${getTokenCountForDepth(tokenCount, depth)} Tokens`}
-            </div>
-            <div className="rounded border border-gray-6 bg-white p-1 flex items-center shadow-md">
-              <TextareaAutosize
-                autoFocus
-                onChange={(e) => setInput(e.target?.value)}
-                onKeyDown={(e) => {
-                  if (e.key == "Enter" && e.shiftKey == false) {
-                    e.preventDefault();
-                    onSubmit();
-                  }
-                }}
-                className="bg-transparent text-sm text-gray-1 placeholder:text-gray-4 px-2 focus:outline-none grow resize-none border-0"
-                placeholder="Send a message"
-                value={input}
-                maxRows={7}
-              />
-              <Button
-                variant="secondary"
-                className="size-7 bg-bg text-lilac p-0 mt-auto"
-                disabled={input.length == 0}
-                onClick={() => onSubmit()}
-              >
-                <SendHorizonal strokeWidth={3} className="size-4" />
-              </Button>
-            </div>
-            {llmSettingsOpen && <Depth depth={depth} tokenCount={tokenCount} setDepth={setDepth} />}
-          </div>
-          <div className={clsx("ml-3 flex flex-col", llmSettingsOpen && "mb-12")}>
-            <div
-              className={clsx(
-                "text-xs text-gray-3 h-5 flex items-center max-w-[125px] mb-1",
-                !hasResponse && "pr-3",
+                  {buddy?.model == "o1-preview" && (
+                    <div className="mt-2 text-sm italic text-gray-3">
+                      (o1 currently can&apos;t stream responses so it may take a moment to appear)
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="leading-6 pb-3 max-h-96 overflow-auto -mt-2" ref={scrollRef}>
+                  <EditorContent editor={readOnlyEditor} />
+                </div>
               )}
-            >
-              <Bot className="size-3 mr-1 shrink-0" />
-              <div className="line-clamp-1">{buddy?.name ?? "No Buddy"}</div>
+              {loading ? (
+                <Button variant="outline" onClick={() => abortController?.abort()}>
+                  <StopCircle className="size-4 mr-2" /> Stop
+                </Button>
+              ) : !isGuest ? (
+                <Button variant="outline" onClick={() => addNode()}>
+                  <Plus className="size-4 mr-1" /> Add to {focus === "graph" ? "Graph" : "Editor"}
+                </Button>
+              ) : (
+                <></>
+              )}
             </div>
-            <div className="flex gap-3 mt-auto">
-              <Buddies className="mt-auto" />
-              <Button
-                className={clsx("size-9 p-0 shadow-md", llmSettingsOpen && "border-lilac")}
-                variant="outline"
-                data-tooltip-id="llm-settings"
-                onClick={() => setLlmSettingsOpen(!llmSettingsOpen)}
+          )}
+          <div className="flex px-1">
+            <div className="grow">
+              <div className={clsx("text-xs text-gray-3 h-5 mb-1", !hasResponse && "pl-3")}>
+                {isTokenCountLoading || Object.keys(tokenCount).length === 0
+                  ? "Counting..."
+                  : `${getTokenCountForDepth(tokenCount, depth)} Tokens`}
+              </div>
+              <div className="rounded border border-gray-6 bg-white p-1 flex items-center shadow-md">
+                <TextareaAutosize
+                  autoFocus
+                  onChange={(e) => setInput(e.target?.value)}
+                  onKeyDown={(e) => {
+                    if (e.key == "Enter" && e.shiftKey == false) {
+                      e.preventDefault();
+                      onSubmit();
+                    }
+                  }}
+                  className="bg-transparent text-sm text-gray-1 placeholder:text-gray-4 px-2 focus:outline-none grow resize-none border-0"
+                  placeholder="Send a message"
+                  value={input}
+                  maxRows={7}
+                />
+                <Button
+                  variant="secondary"
+                  className="size-7 bg-bg text-lilac p-0 mt-auto"
+                  disabled={input.length == 0}
+                  onClick={() => onSubmit()}
+                >
+                  <SendHorizonal strokeWidth={3} className="size-4" />
+                </Button>
+              </div>
+              {llmSettingsOpen && (
+                <Depth depth={depth} tokenCount={tokenCount} setDepth={setDepth} />
+              )}
+            </div>
+            <div className={clsx("ml-3 flex flex-col", llmSettingsOpen && "mb-12")}>
+              <div
+                className={clsx(
+                  "text-xs text-gray-3 h-5 flex items-center max-w-[125px] mb-1",
+                  !hasResponse && "pr-3",
+                )}
               >
-                <Settings2 className="size-4" />
-              </Button>
-              <Tooltip id="llm-settings" openEvents={{ mouseenter: true }}>
-                Settings
-              </Tooltip>
-              {/* <History /> */}
+                <Bot className="size-3 mr-1 shrink-0" />
+                <div className="line-clamp-1">{buddy?.name ?? "No Buddy"}</div>
+              </div>
+              <div className="flex gap-3 mt-auto">
+                <Buddies className="mt-auto" />
+                <Button
+                  className={clsx("size-9 p-0 shadow-md", llmSettingsOpen && "border-lilac")}
+                  variant="outline"
+                  data-tooltip-id="llm-settings"
+                  onClick={() => setLlmSettingsOpen(!llmSettingsOpen)}
+                >
+                  <Settings2 className="size-4" />
+                </Button>
+                <Tooltip id="llm-settings" openEvents={{ mouseenter: true }}>
+                  Settings
+                </Tooltip>
+                {/* <History /> */}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      {/* Mobile view */}
+      <div
+        className="absolute pl-1 pr-1 md:hidden block justify-center items-center w-full flex flex-col z-60 bottom-0"
+        ref={dragItem}
+        tabIndex={0}
+      >
+        <div className="bg-bg w-full py-2 px-3 rounded-t-lg rounded-r-lg">
+          <div
+            className="absolute top-2 left-2 cursor-grab select-none"
+            onMouseDown={handleDragStart}
+          >
+            <GripIcon className="size-4 text-gray-4" />
+          </div>
+          <div className="absolute top-2 right-2 cursor-pointer" onClick={() => setIsOpen(false)}>
+            <X className="size-4 text-gray-4" />
+          </div>
+          {hasResponse && (
+            <div className="p-1 mt-5 mb-2">
+              {response === "Loading..." ? (
+                <div className="px-2 pt-0 pb-4 text-sm">
+                  <div className="flex items-center">
+                    Loading
+                    <div className="animate-spin rounded-full size-3 border-t-2 border-b-2 border-blue-500 ml-3"></div>
+                  </div>
+                  {buddy?.model == "o1-preview" && (
+                    <div className="mt-2 text-sm italic text-gray-3">
+                      (o1 currently can&apos;t stream responses so it may take a moment to appear)
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="leading-6 pb-3 max-h-96 overflow-auto -mt-2" ref={scrollRef}>
+                  <EditorContent editor={readOnlyEditor} />
+                </div>
+              )}
+              {loading ? (
+                <Button variant="outline" onClick={() => abortController?.abort()}>
+                  <StopCircle className="size-4 mr-2" /> Stop
+                </Button>
+              ) : !isGuest ? (
+                <Button variant="outline" onClick={() => addNode()}>
+                  <Plus className="size-4 mr-1" /> Add to {focus === "graph" ? "Graph" : "Editor"}
+                </Button>
+              ) : (
+                <></>
+              )}
+            </div>
+          )}
+          <div className="flex px-1">
+            <div className="grow">
+              <div className={clsx("text-xs text-gray-3 h-5 mb-1", !hasResponse && "pl-3")}>
+                {isTokenCountLoading || Object.keys(tokenCount).length === 0
+                  ? "Counting..."
+                  : `${getTokenCountForDepth(tokenCount, depth)} Tokens`}
+              </div>
+              <div className="rounded border border-gray-6 bg-white p-1 flex items-center shadow-md">
+                <TextareaAutosize
+                  autoFocus
+                  onChange={(e) => setInput(e.target?.value)}
+                  onKeyDown={(e) => {
+                    if (e.key == "Enter" && e.shiftKey == false) {
+                      e.preventDefault();
+                      onSubmit();
+                    }
+                  }}
+                  className="bg-transparent text-sm text-gray-1 placeholder:text-gray-4 px-2 focus:outline-none grow resize-none border-0"
+                  placeholder="Send a message"
+                  value={input}
+                  maxRows={7}
+                />
+                <Button
+                  variant="secondary"
+                  className="size-7 bg-bg text-lilac p-0 mt-auto"
+                  disabled={input.length == 0}
+                  onClick={() => onSubmit()}
+                >
+                  <SendHorizonal strokeWidth={3} className="size-4" />
+                </Button>
+              </div>
+              {llmSettingsOpen && (
+                <Depth depth={depth} tokenCount={tokenCount} setDepth={setDepth} />
+              )}
+            </div>
+            <div className={clsx("ml-3 flex flex-col", llmSettingsOpen && "mb-12")}>
+              <div
+                className={clsx(
+                  "text-xs text-gray-3 h-5 flex items-center max-w-[125px] mb-1",
+                  !hasResponse && "pr-3",
+                )}
+              >
+                <Bot className="size-3 mr-1 shrink-0" />
+                <div className="line-clamp-1">{buddy?.name ?? "No Buddy"}</div>
+              </div>
+              <div className="flex gap-3 mt-auto">
+                <Buddies className="mt-auto" />
+                <Button
+                  className={clsx("size-9 p-0 shadow-md", llmSettingsOpen && "border-lilac")}
+                  variant="outline"
+                  data-tooltip-id="llm-settings"
+                  onClick={() => setLlmSettingsOpen(!llmSettingsOpen)}
+                >
+                  <Settings2 className="size-4" />
+                </Button>
+                <Tooltip id="llm-settings" openEvents={{ mouseenter: true }}>
+                  Settings
+                </Tooltip>
+                {/* <History /> */}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 };
 
