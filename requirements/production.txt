@@ -167,9 +167,9 @@ cffi==1.17.1 \
     --hash=sha256:f7f5baafcc48261359e14bcd6d9bff6d4b28d9103847c9e136694cb0501aef87 \
     --hash=sha256:fc48c783f9c87e60831201f2cce7f3b2e4846bf4d8728eabe54d60700b318a0b
     # via argon2-cffi-bindings
-channels==4.1.0 \
-    --hash=sha256:a3c4419307f582c3f71d67bfb6eff748ae819c2f360b9b141694d84f242baa48 \
-    --hash=sha256:e0ed375719f5c1851861f05ed4ce78b0166f9245ca0ecd836cb77d4bb531489d
+channels==4.2.0 \
+    --hash=sha256:6b75bc8d6888fb7236e7e7bf1948520b72d296ad08216a242fc56b1db0ffde1a \
+    --hash=sha256:d9e707487431ba5dbce9af982970dab3b0efd786580fadb99e45dca5e39fdd59
     # via -r requirements/base.in
 charset-normalizer==3.4.0 \
     --hash=sha256:0099d79bdfcf5c1f0c2c72f91516702ebf8b0b8ddd8905f97a8aecf49712c621 \
@@ -711,9 +711,9 @@ kombu==5.4.2 \
     --hash=sha256:14212f5ccf022fc0a70453bb025a1dcc32782a588c49ea866884047d66e14763 \
     --hash=sha256:eef572dd2fd9fc614b37580e3caeafdd5af46c1eff31e7fba89138cdb406f2cf
     # via celery
-openai==1.59.9 \
-    --hash=sha256:61a0608a1313c08ddf92fe793b6dbd1630675a1fe3866b2f96447ce30050c448 \
-    --hash=sha256:ec1a20b0351b4c3e65c6292db71d8233515437c6065efd4fd50edeb55df5f5d2
+openai==1.60.0 \
+    --hash=sha256:7fa536cd4b644718645b874d2706e36dbbef38b327e42ca0623275da347ee1a9 \
+    --hash=sha256:df06c43be8018274980ac363da07d4b417bd835ead1c66e14396f6f15a0d5dda
     # via
     #   -r requirements/base.in
     #   sentry-sdk
