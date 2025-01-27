@@ -85,7 +85,7 @@ const Editor = ({ id, className }: EditorProps) => {
     <div className={clsx("border-gray-300 border-l overflow-hidden flex flex-col", className)}>
       {editorError && <ErrorPage error={editorError} className="absolute z-40 bg-white" />}
       {!editorSynced && <Loader message="Loading editor..." className="absolute z-30" />}
-      <div className="p-3 font-medium text-lg mr-24">
+      <div className="p-3 md:text-left text-center font-medium text-lg mr-24">
         <EditableNode id={id} className="w-full" />
       </div>
       <div className="absolute top-2 right-2 flex gap-2">
